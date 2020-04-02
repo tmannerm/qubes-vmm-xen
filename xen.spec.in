@@ -52,6 +52,11 @@
 %define with_systemd_presets 0
 %endif
 
+# SUSE doesn't have python3_pkgversion macro
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+%global python3_pkgversion 3
+%endif
+
 %if 0%{?centos} >= 8
 %define with_systemd_presets 1
 %define build_docs 0
@@ -173,8 +178,13 @@ Patch1022: patch-xen-acpi-slic-support.patch
 %if %build_qemutrad
 BuildRequires: libidn-devel zlib-devel SDL-devel curl-devel
 BuildRequires: libX11-devel gtk2-devel libaio-devel
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+BuildRequires: qemu-seabios qemu-ipxe
+%else
 # build using Fedora seabios and ipxe packages for roms
 BuildRequires: seabios-bin ipxe-roms-qemu
+%endif
+
 %ifarch %{ix86} x86_64
 # for the VMX "bios"
 BuildRequires: dev86
@@ -202,11 +212,19 @@ BuildRequires: libuuid-devel
 # iasl needed to build hvmloader
 BuildRequires: acpica-tools
 # modern compressed kernels
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+BuildRequires: libbz2-devel xz-devel
+%else
 BuildRequires: bzip2-devel xz-devel
+%endif
 # libfsimage
 BuildRequires: e2fsprogs-devel
 # tools now require yajl
+%if 0%{?suse_version} == 1500 && 0%{?is_opensuse}
+BuildRequires: libyajl-devel
+%else
 BuildRequires: yajl-devel
+%endif
 # remus support now needs libnl3
 BuildRequires: libnl3-devel
 %if %with_xsm
