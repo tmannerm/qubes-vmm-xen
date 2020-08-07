@@ -545,7 +545,11 @@ rm -rf %{buildroot}/%{_unitdir}/oxenstored.service
 %endif
 
 %if %build_ovmf
+%if 0%{?suse_version} == 1500
+cat /usr/share/qemu/ovmf-x86_64-{vars,code}.bin > %{buildroot}%{_libexecdir}/%{name}/boot/ovmf.bin
+%else
 cat /usr/share/OVMF/OVMF_{VARS,CODE}.fd >%{buildroot}%{_libexecdir}/%{name}/boot/ovmf.bin
+%endif
 %endif
 
 ############ fixup files in /etc ############
@@ -555,10 +559,10 @@ mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d/
 install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 # init scripts
-rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xen-watchdog
-rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xencommons
-rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xendomains
-rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xendriverdomain
+rm %{buildroot}%{_initddir}/xen-watchdog
+rm %{buildroot}%{_initddir}/xencommons
+rm %{buildroot}%{_initddir}/xendomains
+rm %{buildroot}%{_initddir}/xendriverdomain
 # BEGIN QUBES SPECIFIC PART
 rm %{buildroot}%{_sysconfdir}/sysconfig/xendomains
 cp %{SOURCE32} %{buildroot}/usr/lib/modules-load.d/xen.conf
