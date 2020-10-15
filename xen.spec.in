@@ -858,7 +858,9 @@ fi
 %if "%{_libdir}" != "/usr/lib"
 %{_libdir}/%{name}
 %endif
+%if "%{_libexecdir}" != "/usr/lib"
 %ghost /usr/lib/%{name}
+%endif
 # General Xen state
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/lib/%{name}/dump
